@@ -1,5 +1,5 @@
-#ignore api key for kaggle
+# Ignore api key for kaggle. 
 OCT_scan_classification/kaggle.json
 
-#ignore the training data set. Too large for git can be found at https://www.kaggle.com/datasets/paultimothymooney/kermany2018
-OCT_scan_classification\data\OCT2017
+# Ignore the training data set. Too large for git can be found at https://www.kaggle.com/datasets/paultimothymooney/kermany2018.
+OCT_scan_classification/data/
