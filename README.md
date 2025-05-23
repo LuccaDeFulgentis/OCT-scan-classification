@@ -4,6 +4,7 @@ PROJECT IS DONE FINISHING DOCUMENTATION and README
 
 Currently working on Confusion Matrix and Disease Descriptions
 
+Exploratory Data Analysis included in Notebook Folder
 
 ## Project Description:
 A convolutional neural network (CNN) built with pytorch to classify Optical Coherence Tomography (OCT) images into four diagnoses:  
