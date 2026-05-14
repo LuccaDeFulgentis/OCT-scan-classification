@@ -48,4 +48,3 @@ runs/
 data/OCT2017/
 
 src/__init__.py
-src/evaluate_only.py
