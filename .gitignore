@@ -3,3 +3,46 @@ OCT_scan_classification/kaggle.json
 
 # Ignore the training data set. Too large for git can be found at https://www.kaggle.com/datasets/paultimothymooney/kermany2018.
 OCT_scan_classification/data/
+
+# Python cache
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+
+# Virtual environments
+venv/
+.venv/
+
+# VS Code
+.vscode/
+
+# Jupyter notebooks
+.ipynb_checkpoints/
+
+# Model checkpoints
+saved_models/
+*.pth
+
+# Logs
+*.log
+
+# macOS
+.DS_Store
+
+# Windows
+Thumbs.db
+
+# Environment variables
+.env
+
+# Build files
+build/
+dist/
+*.egg-info/
+
+# PyTorch
+runs/
+
+# Dataset files
+data/OCT2017/
