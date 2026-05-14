@@ -1,58 +1,51 @@
 import os
 from PIL import Image # Image loader
 from torch.utils.data import Dataset # How to load and access data
-import torchvision.transforms as transforms # Pre-Processing tools 
+
 
 # Class that loads and processes the OCT images
 class OCTDataset(Dataset): 
     """
-    A dataset for loading and preprocessing images organized in subdirectories.
-    The images are loaded, converted to grayscale, resized to 128x128 pixels, and transformed into PyTorch tensors.
+    PyTorch dataset for OCT retinal image classification.
 
-    Args:
-        root_dir (str): Path to the root directory containing subdirectories for each class. 
+    Loads images from class-specific subdirectories and applies optional
+    image transformations for training and evaluation
 
-    Attributes:
-        root_dir (str): Root directory path.
-        class_to_idx (dict): Mapping from class folder names to integer labels.
-        samples (list): List of (image_path, label) for all images in the dataset.
-        transform (torch function): Image transformations applied to each image.
-
-    Methods:
-        __len__(): Returns the total number of images in the dataset.
-        __getitem__(idx): Loads and returns the transformed image tensor and its label at the given index.
     """
 
-    def __init__(self, root_dir): 
+    def __init__(self, root_dir, transform=None): 
         """
-        Initializes the OCTDataset.
+        Initializes the OCT dataset.
 
         Args:
-            root_dir (str): 
-                Path to the root directory containing subdirectories for each class.
-
-        Attributes:
-            class_to_idx (dict): Dictionary mapping class folder names to integer labels.
-            samples (list): List of (image_path, label) for loading data during training.
-    """
+            root_dir: Path to the dataset directory.
+            transform: Optional image transformations.
+        """
 
         self.root_dir = root_dir # New objects root directory set to given arg 
-        self.transform = transforms.Compose([  # Transforms the images .compose allows to chain the transformations
-            transforms.Grayscale(),  # Transforms the image to grayscale (should be spelled greyscale!)
-            transforms.Resize((128, 128)), # Resizes the images to 128 by 128
-            transforms.ToTensor(), # Converts the image into a PyTorch Tensor (C * H * W) 
-            # (Channels, Height, Width) then each pixel will have a value [0, 1.0] for the intensity 
+        self.transform = transform
+
+        self.classes = sorted([
+            class_name for class_name in os.listdir(root_dir)
+            if os.path.isdir(os.path.join(root_dir, class_name))
         ])
 
-        self.samples = []
-        self.class_to_idx = {class_name: idx for idx, class_name in enumerate(os.listdir(root_dir))} # Creates a dictionary with each subfolder and index ie [class: idx,]
-        
-        for label in os.listdir(root_dir): # For each subfolders label = subfolder
-            class_dir = os.path.join(root_dir, label) # Enter each subfolder
-            for img_name in os.listdir(class_dir): # For each image in the current subfolder
-                img_path = os.path.join(class_dir, img_name) # Update image path
-                self.samples.append((img_path, self.class_to_idx[label])) # List [(image path : subfolder index)] [('OCT2017/CNV/img1.jpeg', 0), ('OCT2017/CNV/img2.jpeg', 0)]
+        self.class_to_idx = {
+            class_name: idx for idx, class_name in enumerate(self.classes)
+        }
 
+        self.samples = []
+        
+        for class_name in self.classes:
+            class_dir = os.path.join(root_dir, class_name)
+            label = self.class_to_idx[class_name]
+
+            for img_name in os.listdir(class_dir):
+                if img_name.lower().endswith((".png", ".jpg", ".jpeg")):
+                    img_path = os.path.join(class_dir, img_name)
+                    self.samples.append((img_path, label))
+
+        
     def __len__(self):
         """
         Returns the total number of samples in the dataset.
@@ -76,7 +69,8 @@ class OCTDataset(Dataset):
 
         """
         img_path, label = self.samples[idx] 
-        image = Image.open(img_path)
-        image = self.transform(image) # Converts image into a tensor
+        image = Image.open(img_path).convert("L")
+        if self.transform :
+            image = self.transform(image) # Converts image into a tensor
 
         return image, label
