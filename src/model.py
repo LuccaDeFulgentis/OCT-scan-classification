@@ -1,9 +1,9 @@
-import torch.nn as nn # Neural networks and layers
-import torch.nn.functional as F # Activation functions such as pooling  
+import torch.nn as nn 
+import torch.nn.functional as F 
 
 class OCTModel(nn.Module):
     """
-    
+        CNN Model for OCT Classification
     """
     def __init__(self, num_classes=4):
         """
@@ -47,4 +47,5 @@ class OCTModel(nn.Module):
         x = F.relu(self.fc1(x)) # Fully connected and sets all negative values to 0
         x = self.dropout(x) # Dropout regularization
         x = self.fc2(x) # Final output layer for each class
-        return x # returns the output logits
+
+        return x 
