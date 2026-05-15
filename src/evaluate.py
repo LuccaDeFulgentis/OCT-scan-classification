@@ -10,6 +10,8 @@ import logging
 
 from .dataset import OCTDataset
 
+IMAGENET_MEAN = [0.485, 0.456, 0.406]
+IMAGENET_STD  = [0.229, 0.224, 0.225]
 
 def get_test_transform():
     """
@@ -19,9 +21,9 @@ def get_test_transform():
         Test image transformations.
     """
     return transforms.Compose([
-        transforms.Resize((128, 128)),
+        transforms.Resize((224, 224)),
         transforms.ToTensor(),
-        transforms.Normalize(mean=[0.5], std=[0.5])
+        transforms.Normalize(mean=IMAGENET_MEAN, std=IMAGENET_STD)
     ])
 
 def save_confusion_matrix(cm, class_names):
@@ -73,7 +75,7 @@ def evaluate_model(model, test_dir, batch_size=32):
     model.eval() 
 
     test_data = OCTDataset(test_dir, transform=get_test_transform())
-    test_loader = DataLoader(test_data, batch_size=batch_size, shuffle=False) # Wraps the dataset in a dataloader
+    test_loader = DataLoader(test_data, batch_size=batch_size, shuffle=False, num_workers=2) # Wraps the dataset in a dataloader
 
     all_preds = []
     all_labels = []
