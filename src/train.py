@@ -4,6 +4,7 @@ import torch.optim as optim
 from torch.utils.data import DataLoader
 from pathlib import Path
 import logging
+from torch.optim.lr_scheduler import StepLR
 
 from .dataset import OCTDataset
 from .model import OCTModel
@@ -16,6 +17,9 @@ logging.basicConfig(
     format="%(asctime)s | %(levelname)s | %(message)s"
 )
 
+#Standard ImageNet stats
+IMAGENET_MEAN = [0.485, 0.456, 0.406]
+IMAGENET_STD  = [0.229, 0.224, 0.225]
 
 def get_train_transform():
     """
@@ -25,11 +29,11 @@ def get_train_transform():
         Training image transformations.
     """
     train_transform = transforms.Compose([
-        transforms.Resize((128, 128)),
+        transforms.Resize((224, 224)),
         transforms.RandomHorizontalFlip(),
         transforms.RandomRotation(10),
         transforms.ToTensor(),
-        transforms.Normalize(mean=[0.5], std=[0.5])
+        transforms.Normalize(mean=IMAGENET_MEAN, std=IMAGENET_STD)
     ])
     return train_transform
 
@@ -42,9 +46,9 @@ def get_val_transform():
         Validation image transformations.
     """
     val_transform = transforms.Compose([
-        transforms.Resize((128, 128)),
+        transforms.Resize((224, 224)),
         transforms.ToTensor(),
-        transforms.Normalize(mean=[0.5], std=[0.5])
+        transforms.Normalize(mean=IMAGENET_MEAN, std=IMAGENET_STD)
         ])
     return val_transform
 
@@ -79,7 +83,7 @@ def validate_model(model, val_loader, device):
     return val_acc
 
 
-def train_model(train_dir, val_dir, epochs=5, batch_size=32, lr=0.001, checkpoint_path="saved_models/best_model.pth"):
+def train_model(train_dir, val_dir, epochs=10, batch_size=32, lr=0.001, checkpoint_path="saved_models/best_model.pth"):
     """
     Trains the OCTModel on the training dataset.
 
@@ -108,11 +112,13 @@ def train_model(train_dir, val_dir, epochs=5, batch_size=32, lr=0.001, checkpoin
     train_data = OCTDataset(train_dir, transform=get_train_transform())
     val_data = OCTDataset(val_dir, transform=get_val_transform())
 
-    train_loader = DataLoader(train_data, batch_size=batch_size, shuffle=True) # Creates batches
-    val_loader = DataLoader(val_data, batch_size=batch_size)
+    train_loader = DataLoader(train_data, batch_size=batch_size, shuffle=True, num_workers=2) # Creates batches
+    val_loader = DataLoader(val_data, batch_size=batch_size, num_workers=2)
 
     criterion = nn.CrossEntropyLoss() # Creates the loss function
     optimizer = optim.Adam(model.parameters(), lr=lr) # Sets the adam optomiser learning rate
+
+    scheduler = StepLR(optimizer, step_size=3, gamma=0.5)
 
     best_val_acc = 0.0
     history = []
@@ -130,6 +136,8 @@ def train_model(train_dir, val_dir, epochs=5, batch_size=32, lr=0.001, checkpoin
             optimizer.step() # Updates the model
             running_loss += loss.item() #Batch loss
 
+        scheduler.step()
+
         epoch_loss = running_loss / len(train_loader)
         val_acc = validate_model(model, val_loader, device)
 
@@ -142,7 +150,8 @@ def train_model(train_dir, val_dir, epochs=5, batch_size=32, lr=0.001, checkpoin
         logging.info(
             f"Epoch {epoch+1}/{epochs} | "
             f"Loss: {epoch_loss:.4f} | "
-            f"Val Accuracy: {val_acc:.2f}%"
+            f"Val Accuracy: {val_acc:.2f}% |"
+            f"LR: {scheduler.get_last_lr()[0]:.6f}"
         )
 
         if val_acc > best_val_acc:
