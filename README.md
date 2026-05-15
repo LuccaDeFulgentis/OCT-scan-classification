@@ -1,6 +1,6 @@
 # OCT Scan Classification
 
-A deep learning system built with PyTorch for automated classification of Optical Coherence Tomography (OCT) retinal scans using transfer learning on ResNet-18.
+A deep learning system built with PyTorch for automated classification of Optical Coherence Tomography (OCT) retinal scans using transfer learning on ResNet-18. Originally was a scratch CNN, stored on legacy branch. 
 
 ![Python](https://img.shields.io/badge/Python-3.10-blue)
 ![PyTorch](https://img.shields.io/badge/PyTorch-2.5.1-red)
@@ -30,10 +30,10 @@ The ResNet-18 model achieved strong performance on the OCT2017 test dataset (84K
 
 | Metric | Score |
 |--------|-------|
-| Test Accuracy | **96%** |
-| Precision | 96% |
-| Recall | 96% |
-| F1-Score | 96% |
+| Test Accuracy | **97%** |
+| Precision | 97% |
+| Recall | 97% |
+| F1-Score | 97% |
 
 **Confusion Matrix:**
 
@@ -57,20 +57,32 @@ Additional analysis and visualizations are included in the notebook/ directory.
 Data Source: https://www.kaggle.com/datasets/paultimothymooney/kermany2018/discussion/372147
 
 Dataset splits:
-- Train
-- Validation
-- Test
+- Training: 83,484 images
+- Validation: 32 images (8 per class)
+- Test: 968 images (242 per class)
 
 ## Model Architecture
-The CNN architecture consists of:
 
-- 2 convolutional layers
-- ReLU activation functions
-- Max pooling layers
-- Fully connected layers
-- Dropout regularization
+**Base:** ResNet-18 pretrained on ImageNet  
+**Modifications:**
+- Final fully connected layer: 512 → 4 classes
+- Input: 224×224 RGB images
+- Normalization: ImageNet statistics (mean=[0.485, 0.456, 0.406], std=[0.229, 0.224, 0.225])
 
-Input images are resized to 128x128 grayscale tensors before training.
+**Training Configuration:**
+- Optimizer: Adam (lr=0.001)
+- Scheduler: StepLR (step_size=3, gamma=0.5)
+- Epochs: 15
+- Batch size: 32
+- Data augmentation: Random horizontal flip, random rotation (±10°)
+
+## Project Evolution
+
+This project originally used a custom 2-layer CNN achieving 92% accuracy. The current implementation uses ResNet-18 transfer learning, improving performance to 97% test accuracy (5 percentage point improvement).
+
+**Branches:**
+- `main` — Current ResNet-18 implementation
+- `legacy-cnn` — Original 2-layer CNN architecture (preserved for reference)
 
 ## Disease Descriptions
 ### Choroidal Neovascularization (CNV)
@@ -129,8 +141,19 @@ Evaluate the saved model:
 make evaluate
 ```
 
+## CI/CD
+
+Automated testing runs on every push via GitHub Actions:
+- Model instantiation tests
+- Forward pass shape validation
+- Dependency installation checks
+
 ## Sources
 
 - [PyTorch CIFAR10 Tutorial](https://docs.pytorch.org/tutorials/beginner/blitz/cifar10_tutorial.html)
 
 - [GeeksforGeeks CNN Overview](https://www.geeksforgeeks.org/convolutional-neural-network-cnn-in-machine-learning/)
+
+- [GeeksforGeeks ResNet Overview](https://www.geeksforgeeks.org/deep-learning/resnet18-from-scratch-using-pytorch/)
+
+- [Hugging Face](https://huggingface.co/docs/transformers/en/model_doc/resnet)
