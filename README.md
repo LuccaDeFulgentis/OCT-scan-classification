@@ -30,10 +30,10 @@ The ResNet-18 model achieved strong performance on the OCT2017 test dataset (84K
 
 | Metric | Score |
 |--------|-------|
-| Test Accuracy | **97%** |
-| Precision | 97% |
-| Recall | 97% |
-| F1-Score | 97% |
+| Test Accuracy | **99%** |
+| Precision | 99% |
+| Recall | 99% |
+| F1-Score | 99% |
 
 **Confusion Matrix:**
 
