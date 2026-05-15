@@ -69,7 +69,7 @@ class OCTDataset(Dataset):
 
         """
         img_path, label = self.samples[idx] 
-        image = Image.open(img_path).convert("L")
+        image = Image.open(img_path).convert("RGB")
         if self.transform :
             image = self.transform(image) # Converts image into a tensor
 
