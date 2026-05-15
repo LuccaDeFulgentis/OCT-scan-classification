@@ -2,9 +2,10 @@
 
 A convolutional neural network (CNN) built with PyTorch to classify Optical Coherence Tomography (OCT) images into four diagnoses:  
 
-![Python](https://img.shields.io/badge/Python-3.x-blue)
-![PyTorch](https://img.shields.io/badge/PyTorch-DeepLearning-red)
-![Status](https://img.shields.io/badge/Status-Complete-success)
+![Python](https://img.shields.io/badge/Python-3.10-blue)
+![PyTorch](https://img.shields.io/badge/PyTorch-2.5.1-red)
+![Gradio](https://img.shields.io/badge/Gradio-Live%20Demo-orange)
+![Tests](https://github.com/LuccaDeFulgentis/OCT-scan-classification/actions/workflows/test.yml/badge.svg)
 
 ## Diagnoses Classified:
 * Choroidal Neovascularization (CNV)  
