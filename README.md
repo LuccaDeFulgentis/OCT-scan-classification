@@ -1,42 +1,41 @@
 # OCT Scan Classification
 
-A convolutional neural network (CNN) built with PyTorch to classify Optical Coherence Tomography (OCT) images into four diagnoses:  
+A deep learning system built with PyTorch for automated classification of Optical Coherence Tomography (OCT) retinal scans using transfer learning on ResNet-18.
 
 ![Python](https://img.shields.io/badge/Python-3.10-blue)
 ![PyTorch](https://img.shields.io/badge/PyTorch-2.5.1-red)
 ![Gradio](https://img.shields.io/badge/Gradio-Live%20Demo-orange)
 ![Tests](https://github.com/LuccaDeFulgentis/OCT-scan-classification/actions/workflows/test.yml/badge.svg)
 
-## Diagnoses Classified:
+🔗 **[Live Demo](https://huggingface.co/spaces/Ludefulgentis/OCT-Image-Classification)** — Try it with your own OCT scans
+
+## Diagnoses:
 * Choroidal Neovascularization (CNV)  
 * Diabetic Macular Edema (DME)   
 * Lipid and Protein Deposits (DRUSEN)  
 * Normal Retina (NORMAL)  
 
 ## Features
-- Custom CNN architecture built with PyTorch
-- OCT retinal disease classification
-- Image preprocessing and augmentation pipeline
-- Validation accuracy tracking
-- Automatic best-model checkpoint saving
-- Confusion matrix visualization
-- Classification report generation
-- GPU acceleration with CUDA support
-- Modular training and evaluation pipeline
-- Separate saved-model evaluation workflow
-- Makefile automation for training and evaluation
+- ResNet-18 transfer learning with ImageNet pretrained weights
+- Learning rate scheduling and automated checkpoint management
+- Modular preprocessing and augmentation pipeline
+- GPU-accelerated training with CUDA support
+- Live inference application deployed on Hugging Face Spaces
+- Automated testing via GitHub Actions CI/CD
+- Confusion matrix and classification report generation
 
 ## Results
 
-The CNN achieved strong classification performance on the OCT2017 test dataset.
+The ResNet-18 model achieved strong performance on the OCT2017 test dataset (84K images):
 
 | Metric | Score |
-|---|---|
-| Accuracy | 92% |
-| Precision | 93% |
-| Recall | 92% |
-| F1-Score | 92% |
+|--------|-------|
+| Test Accuracy | **96%** |
+| Precision | 96% |
+| Recall | 96% |
+| F1-Score | 96% |
 
+**Confusion Matrix:**
 
 ![Confusion Matrix](confusion_matrix.png)
 
